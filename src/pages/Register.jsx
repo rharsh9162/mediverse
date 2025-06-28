@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
+
 export default function Register() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -16,23 +18,21 @@ export default function Register() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
-  try {
-    const res = await axios.post("http://localhost:5000/api/users/create", formData);
-    setUserId(res.data.userId);
-    localStorage.setItem("userId", res.data.userId); // ✅ Save userId to localStorage
-  } catch (err) {
-  console.error("Registration error:", err);
-  if (err.response?.status === 409) {
-    setError("This email is already registered. Please use a different one.");
-  } else {
-    setError("Registration failed. Try again.");
-  }
-}
-
-};
-
+    e.preventDefault();
+    setError("");
+    try {
+      const res = await axios.post(`${API_BASE}/users/create`, formData);
+      setUserId(res.data.userId);
+      localStorage.setItem("userId", res.data.userId);
+    } catch (err) {
+      console.error("Registration error:", err);
+      if (err.response?.status === 409) {
+        setError("This email is already registered. Please use a different one.");
+      } else {
+        setError("Registration failed. Try again.");
+      }
+    }
+  };
 
   return (
     <div className="max-w-xl mx-auto py-24 px-4">
@@ -73,9 +73,7 @@ export default function Register() {
 
       {userId && (
         <div className="mt-6 bg-green-50 text-green-700 p-4 rounded shadow">
-          <p className="text-lg font-medium">
-            🎉 Account created! Your unique User ID is:
-          </p>
+          <p className="text-lg font-medium">🎉 Account created! Your unique User ID is:</p>
           <p className="text-xl font-bold mt-2">{userId}</p>
           <p className="mt-2">Use this ID to log in and view your appointments.</p>
         </div>

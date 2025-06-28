@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
+
 export default function UserDashboard() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/appointments/user/${userId}`);
+        const res = await axios.get(`${API_BASE}/appointments/user/${userId}`);
         setAppointments(res.data);
       } catch (err) {
         console.error("Error fetching appointments:", err);

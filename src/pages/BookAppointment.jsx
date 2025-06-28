@@ -1,5 +1,8 @@
+// ✅ Fully updated BookAppointment.jsx with dynamic API URL
 import { useState } from "react";
 import axios from "axios";
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
 export default function BookAppointment() {
   const [formData, setFormData] = useState({
@@ -18,22 +21,19 @@ export default function BookAppointment() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const userId = localStorage.getItem("userId"); // 🔹 Get userId from localStorage
-
-  try {
-    const res = await axios.post("http://localhost:5000/api/appointments", {
-      ...formData,
-      userId, // 🔹 Include userId in appointment
-    });
-    setMessage(res.data.message);
-  } catch (error) {
-  console.error("Booking failed:", error.message);
-  console.log("🔍 Full Axios error object:", error);
-  setMessage("Booking failed. Please try again.");  }
-};
-
+    e.preventDefault();
+    const userId = localStorage.getItem("userId");
+    try {
+      const res = await axios.post(`${API_BASE}/appointments`, {
+        ...formData,
+        userId,
+      });
+      setMessage(res.data.message);
+    } catch (error) {
+      console.error("Booking failed:", error.message);
+      setMessage("Booking failed. Please try again.");
+    }
+  };
 
   return (
     <section className="min-h-screen bg-gray-50 py-24 px-4 sm:px-6 lg:px-8">
@@ -54,10 +54,7 @@ export default function BookAppointment() {
           <input type="time" name="time" required
             className="w-full border px-4 py-2 rounded-md" onChange={handleChange} />
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-          >
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
             Submit
           </button>
         </form>

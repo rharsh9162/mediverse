@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
 export default function EDoctor() {
   const [name, setName] = useState("");
@@ -11,19 +13,14 @@ export default function EDoctor() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/edoctor", {
+      const response = await fetch(`${API_BASE}/edoctor`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, symptoms }),
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong");
-      }
+      if (!response.ok) throw new Error(data.error || "Something went wrong");
 
       setResult(data);
     } catch (error) {
@@ -78,9 +75,7 @@ export default function EDoctor() {
               <strong>Medicines:</strong>
               <ul className="list-disc list-inside ml-2">
                 {result.medicines.map((med, index) => (
-                  <li key={index}>
-                    {med.name} — {med.dosage} ({med.duration})
-                  </li>
+                  <li key={index}>{med.name} — {med.dosage} ({med.duration})</li>
                 ))}
               </ul>
             </div>
@@ -94,9 +89,7 @@ export default function EDoctor() {
               </ul>
             </div>
 
-            {result.nextSteps && (
-              <p><strong>Next Steps:</strong> {result.nextSteps}</p>
-            )}
+            {result.nextSteps && <p><strong>Next Steps:</strong> {result.nextSteps}</p>}
           </div>
         )}
       </div>

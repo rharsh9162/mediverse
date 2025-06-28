@@ -1,25 +1,26 @@
 import { useState } from "react";
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
+
 export default function Login() {
   const [userId, setUserId] = useState("");
   const [appointments, setAppointments] = useState([]);
   const [error, setError] = useState("");
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  setError("");
-  try {
-    const res = await axios.post("http://localhost:5000/api/users/login", { userId });
-    localStorage.setItem("userId", userId); // ✅ Save logged-in userId
-    const apptRes = await axios.get(`http://localhost:5000/api/appointments/user/${userId}`);
-    setAppointments(apptRes.data);
-  } catch (err) {
-    console.error("Login error:", err);
-    setError("Invalid user ID or server error.");
-  }
-};
-
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const res = await axios.post(`${API_BASE}/users/login`, { userId });
+      localStorage.setItem("userId", userId);
+      const apptRes = await axios.get(`${API_BASE}/appointments/user/${userId}`);
+      setAppointments(apptRes.data);
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Invalid user ID or server error.");
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto py-24 px-4">
@@ -34,10 +35,7 @@ const handleLogin = async (e) => {
           className="w-full border px-4 py-2 rounded"
           required
         />
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
+        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
           View My Appointments
         </button>
       </form>
